@@ -18,6 +18,3 @@ Use __.setSysFileStartPattern(String)__ to define a pattern that identifies inte
 
 Use __.setViewSysFiles(bool)__ to choose whether the file manager shows these files or not.
 
-
-
-
