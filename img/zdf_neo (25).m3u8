@@ -1,5 +1,0 @@
-#EXTM3U 
-#EXTVLCOPT--http-reconnect=true 
-#EXTINF:-1,zdf_neo
-#EXTVLCOPT:program=28014
-http://192.168.111.41:8001/1:0:1:6D6E:437:1:C00000:0:0:0:
