@@ -1,2 +1,2 @@
 # ESP8266WebFlMgr
-Manage your SPIFF/xxx files with a simple web based interface
+Manage your SPIFFS/LittleFS files with a simple web based interface
