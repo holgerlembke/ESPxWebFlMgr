@@ -5,7 +5,7 @@ Manage your SPIFFS/LittleFS files with a simple web based interface
 
 ## Usage
 * Click on the filename to download the file.
-* D is delete, R is rename. 
+* D is delete, R is rename, E is in-place-edit.
 * Drop one or multiple file onto the drop zone to upload.
 
 ## System files
