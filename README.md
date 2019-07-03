@@ -47,4 +47,6 @@ WARNING: The webserver has no access control. It servers everything from your ES
 
 To use the "on the fly" gzipper-tool you need to put the file "gzipper.js" from "gzip files" folder on the webserver. Click the "C"-button to compress a file. If the compression factor meets your expectations delete the source file.
 
+Put the sample files from "simplewebpage" for a simple web page on the server.
+
 
