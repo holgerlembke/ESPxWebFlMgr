@@ -12,7 +12,7 @@ void setup() {
   while (! Serial) {
     delay(1);
   }
-  Serial.println("\n\nESP8266WebFlMgr Demo");
+  Serial.println("\n\nESP8266WebFlMgr Demo basic");
 
   SPIFFS.begin();
 

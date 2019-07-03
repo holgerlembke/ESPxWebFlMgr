@@ -90,7 +90,6 @@ void ESP8266WebFlMgr::fileManagerNotFound(void) {
 
   String contentTyp = StaticRequestHandler::getContentType(uri);
 
-#ifndef fileManagerServerStaticsInternally
   if (SPIFFS.exists(uri)) {
     File f = SPIFFS.open(uri, "r");
     if (f) {
@@ -101,7 +100,6 @@ void ESP8266WebFlMgr::fileManagerNotFound(void) {
       f.close();
     }
   } else
-#endif
   {
     fileManager->send(404, F("text/plain"), F("URI not found."));
   }
@@ -644,6 +642,11 @@ void ESP8266WebFlMgr::fileManagerFileListInsert(void) {
             "<button title=\"Delete\" onclick=\"deletefile('" + fn + "')\" class=\"b\">D</button> "
             "<button title=\"Rename\" onclick=\"renamefile('" + fn + "')\" class=\"b\">R</button> ";
 
+      // no gziped version and (zipper or gziped zipper) exists
+      if ( (! (fn.endsWith(".gz")) ) &&
+           ((SPIFFS.exists("/gzipper.js.gz")) || (SPIFFS.exists("/gzipper.js"))) ) {
+        fc += "<button title=\"Compress\" onclick=\"compressurlfile('" + fn + "')\" class=\"b\">C</button> ";
+      }
       // for editor
 #ifndef fileManagerEditEverything
       String contentTyp = StaticRequestHandler::getContentType(fn);
@@ -654,11 +657,6 @@ void ESP8266WebFlMgr::fileManagerFileListInsert(void) {
         fc+="<button title=\"Edit\" onclick=\"editfile('" + fn + "')\" class=\"b\">E</button> ";
 	  }
 
-      // no gziped version and (zipper or gziped zipper) exists
-      if ( (! (fn.endsWith(".gz")) ) &&
-           ((SPIFFS.exists("/gzipper.js.gz")) || (SPIFFS.exists("/gzipper.js"))) ) {
-        fc += "<button title=\"Compress\" onclick=\"compressurlfile('" + fn + "')\" class=\"b\">C</button> ";
-      }
       fc += "&nbsp;&nbsp;</div>";
 
       fileManager->sendContent(fc);
