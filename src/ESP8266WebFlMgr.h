@@ -37,6 +37,7 @@ class ESP8266WebFlMgr {
 	
 	// javascript xmlhttp includes
 	String colorline(int i);
+	String escapeHTMLcontent(String html);
     void fileManagerFileListInsert(void);
 	void fileManagerFileEditorInsert(void);
 	boolean allowAccessToThisFile(const String filename);

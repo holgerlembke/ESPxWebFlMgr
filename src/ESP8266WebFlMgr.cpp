@@ -294,7 +294,7 @@ function editfile(filename) {
       var DONE = this.DONE || 4;
       if (this.readyState === DONE) {
           document.getElementById('fi').innerHTML = editxhr.responseText;
-          document.getElementById("oo3").innerHTML = "Edit.";
+          document.getElementById("oo3").innerHTML = "Edit "+filename;
           document.getElementById('msg').innerHTML = "";
       }
   };
@@ -303,14 +303,15 @@ function editfile(filename) {
 }
 
 function sved(filename) {
-  document.getElementById('msg').innerHTML = "Please wait...";
   var content=document.getElementById('tect').value;
+  // utf-8
+  content = unescape(encodeURIComponent(content));
   
   var xhr = new XMLHttpRequest();
 
   xhr.open("POST", "/r", true);
   
-  var boundary = '---------------------------whatever';
+  var boundary = '-----whatever';
   xhr.setRequestHeader("Content-Type", "multipart/form-data; boundary=" + boundary);
 
   var body = "" +     
@@ -319,7 +320,7 @@ function sved(filename) {
       'Content-Type: text/plain' + '\r\n' + 
       '' + '\r\n' + 
       content + '\r\n' + 
-      '--' + boundary + '--' + 
+      '--' + boundary + '--\r\n' + 
       ''; 
 
   // ajax does not do xhr.setRequestHeader("Content-length", body.length);
@@ -386,6 +387,7 @@ function dragOverHandler(ev) {
 }
 
 window.onload=getfileinsert;
+
 
   )==x==";
 
@@ -686,6 +688,15 @@ void ESP8266WebFlMgr::fileManagerFileListInsert(void) {
   delay(1);
 }
 
+//*****************************************************************************************************
+String ESP8266WebFlMgr::escapeHTMLcontent(String html) {
+	//html.replace("<","&lt;");
+	//html.replace(">","&gt;");
+	html.replace("&","&amp;");
+	
+	return html;
+}
+
 // in place editor
 //*****************************************************************************************************
 void ESP8266WebFlMgr::fileManagerFileEditorInsert(void) {
@@ -702,9 +713,7 @@ void ESP8266WebFlMgr::fileManagerFileEditorInsert(void) {
     fileManager->setContentLength(CONTENT_LENGTH_UNKNOWN);
     fileManager->send(200, F("text/html"), String());
 
-    fileManager->sendContent(F("<form method=\"post\" action=\"ed?fn="));
-	fileManager->sendContent(fn);
-	fileManager->sendContent(F("\"><textarea id=\"tect\" rows=\"25\" cols=\"80\">"));
+	fileManager->sendContent(F("<form><textarea id=\"tect\" rows=\"25\" cols=\"80\">"));
 
     /*
     if (SPIFFS.exists(fn)) {
@@ -721,6 +730,7 @@ void ESP8266WebFlMgr::fileManagerFileEditorInsert(void) {
       if (f) {
         do {
           String l = f.readStringUntil('\n')+'\n'; 
+		  l = escapeHTMLcontent(l);
           fileManager->sendContent(l);
 		} while (f.available());
         f.close();

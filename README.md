@@ -18,3 +18,6 @@ Use __.setSysFileStartPattern(String)__ to define a pattern that identifies inte
 
 Use __.setViewSysFiles(bool)__ to choose whether the file manager shows these files or not.
 
+## The Editor
+
+It is very basic. It will fail in a lot of cases. Use it as fast file viewer or if in distress. Instead I would recommend editing with Notepad++ or Visual Studio Code and upload the files.

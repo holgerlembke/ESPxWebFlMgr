@@ -84,7 +84,7 @@ function editfile(filename) {
       var DONE = this.DONE || 4;
       if (this.readyState === DONE) {
           document.getElementById('fi').innerHTML = editxhr.responseText;
-          document.getElementById("oo3").innerHTML = "Edit.";
+          document.getElementById("oo3").innerHTML = "Edit "+filename;
           document.getElementById('msg').innerHTML = "";
       }
   };
@@ -94,12 +94,14 @@ function editfile(filename) {
 
 function sved(filename) {
   var content=document.getElementById('tect').value;
+  // utf-8
+  content = unescape(encodeURIComponent(content));
   
   var xhr = new XMLHttpRequest();
 
   xhr.open("POST", "/r", true);
   
-  var boundary = '---------------------------whatever';
+  var boundary = '-----whatever';
   xhr.setRequestHeader("Content-Type", "multipart/form-data; boundary=" + boundary);
 
   var body = "" +     
@@ -108,7 +110,7 @@ function sved(filename) {
       'Content-Type: text/plain' + '\r\n' + 
       '' + '\r\n' + 
       content + '\r\n' + 
-      '--' + boundary + '--' + 
+      '--' + boundary + '--\r\n' +        // \r\n fixes upload delay in ESP8266WebServer
       ''; 
 
   // ajax does not do xhr.setRequestHeader("Content-length", body.length);
@@ -174,7 +176,5 @@ function dragOverHandler(ev) {
   ev.preventDefault();
 }
 
-
 window.onload=getfileinsert;
-
 
