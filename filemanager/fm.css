@@ -1,4 +1,3 @@
-
 div {
   margin: 1px;
   padding: 0px;
@@ -29,6 +28,7 @@ div {
   grid-area: o3;
   background-color: #CC99CC;
   margin-bottom: 0px;
+  white-space: nowrap;
 }
 
 .o4 {
@@ -56,7 +56,6 @@ div {
 .s13 {
   margin: 0px;
   border-top-left-radius: 20px;
-  background-color: white;  
   height: 30px;
 }
 
@@ -87,7 +86,6 @@ div {
 .s33 {
   margin: 0px;
   border-bottom-left-radius: 20px;
-  background-color: white;  
   height: 30px;
 }
 
@@ -100,13 +98,24 @@ div {
 
 .u2 {
   grid-area: u2;
+  cursor: pointer;
   background-color: #CC6666;
   margin-top: 0px;
+  padding-left: 10px;
+  vertical-align: middle;
+  font-size: 80%;
+}
+
+.u2:hover {
+  background-color: #9999FF;
+  color: white;
 }
 
 .u3 {
   grid-area: u3;
+  padding-left: 10px;
   background-color: #FF9966;
+  font-size: 80%;
   margin-top: 0px;
 }
 

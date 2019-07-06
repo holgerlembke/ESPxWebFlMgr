@@ -24,6 +24,7 @@ class ESP8266WebFlMgr {
 	bool _ViewSysFiles = false;
 	String _SysFileStartPattern = "/.";
     File fsUploadFile;
+	String _backgroundColor = "black";
 
     void fileManagerNotFound(void);
     String dispIntDotted(size_t i);
@@ -34,6 +35,7 @@ class ESP8266WebFlMgr {
     void fileManagerIndexpage(void);
 	void fileManagerJS(void);
     void fileManagerCSS(void);
+	void fileManagerGetBackGround(void);
 	
 	// javascript xmlhttp includes
 	String colorline(int i);
@@ -44,6 +46,10 @@ class ESP8266WebFlMgr {
     void fileManagerCommandExecutor(void);
 	void fileManagerReceiverOK(void);
 	void fileManagerReceiver(void);
+	
+	// Zip-File uncompressed/stored
+	void getAllFilesInOneZIP(void);
+    int WriteChunk(const char* b, size_t l);
 
   public:
     ESP8266WebFlMgr(word port);
@@ -52,6 +58,10 @@ class ESP8266WebFlMgr {
 	void begin();
 	void end();
     virtual void handleClient();
+
+    // This must be called before the webpage is loaded in the browser...
+	// must be a valid css color name, see https://en.wikipedia.org/wiki/Web_colors
+    void setBackGroundColor(const String backgroundColor);
 	
 	void setViewSysFiles(bool vsf);
 	bool getViewSysFiles(void);
@@ -60,5 +70,29 @@ class ESP8266WebFlMgr {
 	String getSysFileStartPattern(void);
 };
 
-
 #endif
+
+/*
+      History
+	  
+	    -- 2019-07-06
+	       + "Download all files" creates a zip file from all files and lets it download
+		   + option to set background color
+		   - html5 fixes
+		   
+	    -- 2019-07-03
+	       + Public Release on https://github.com/holgerlembke/ESP8266WebFlMgr
+	  
+	  
+	  Things to do
+	  
+	    ?? unify file system access for SPIFFS, LittleFS and SDFS
+		?? Port to ESP32
+    
+
+
+
+*/
+
+
+

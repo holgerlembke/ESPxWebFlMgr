@@ -3,21 +3,22 @@
   <head>
     <title>FileManager</title>
     <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/bg.css">
     <link rel="stylesheet" type="text/css" href="/fm.css">
     <script src="/fm.js"></script>  
     <script src="/gzipper.js"></script>  
   </head>
-  <body>
+  <body class="background">
     <div id="gc">
         <div class="o1">&nbsp;</div>
         <div class="o2">&nbsp;</div>
-        <div class="o3"><nobr id="oo3">&nbsp;</nobr></div>
+        <div class="o3" id="o3">&nbsp;</div>
         <div class="o4">&nbsp;</div>
 
         <div class="m1">
             <div class="s11">&nbsp;</div>
             <div class="s12">
-              <div class="s13">&nbsp;</div>
+            <div class="s13 background">&nbsp;</div>
             </div>
         </div>
         <div class="m2" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
@@ -28,12 +29,12 @@
         <div class="m3">
             <div class="s31">&nbsp;</div>
             <div class="s32">
-              <div class="s33">&nbsp;</div>
+            <div class="s33 background">&nbsp;</div>
             </div>
         </div>
 
         <div class="u1">&nbsp;</div>
-        <div class="u2">&nbsp;</div>
+        <div class="u2" onclick="downloadall();">Download all files</div>
         <div class="u3" id="msg">&nbsp;</div>
         <div class="u4">&nbsp;</div>
         <div class="c" id="fi">
