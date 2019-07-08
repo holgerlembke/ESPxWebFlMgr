@@ -1,24 +1,18 @@
-#include <ESP8266WiFi.h>
-#include <ESP8266WebFlMgr.h>
-// getting access to the nice mime-type-table and getContentType()
-#include "detail/RequestHandlersImpl.h"
+#include <WiFi.h>
 #include <FS.h>
+#include <SPIFFS.h>
+#include <WebServer.h>
+// getting access to the nice mime-type-table and getContentType()
+#include <detail/RequestHandlersImpl.h>
 
-/*
-
- This example has an additional web server on port 80.
- It serves files from SPIFFS. Upload the files from "simplewebpage" for a quick start.
-
- Usage: copy the sketch tab, call setup+loop as we all know.
- 
-*/
+#include <ESPxWebFlMgr.h>
 
 const word filemanagerport = 8080;
 
 const String hlssid ="..";
 const String hlpwd = "..";
 
-ESP8266WebFlMgr filemgr(filemanagerport); // we want a different port than the webserver
+ESPxWebFlMgr filemgr(filemanagerport); // we want a different port than the webserver
 
 void setup() {
   // the usual Serial stuff....
@@ -26,12 +20,15 @@ void setup() {
   while (! Serial) {
     delay(1);
   }
-  Serial.println("\n\nESP8266WebFlMgr Demo basicwsagzip"); // BASIC and WebServer And GZIPper
+  Serial.println("\n\nESP32WebFlMgr Demo basicwsagzip"); // BASIC and WebServer And GZIPper
 
-  SPIFFS.begin();
+  if (!SPIFFS.begin(true)) { // Format if failed.
+    Serial.println("SPIFFS Mount Failed");
+    return;
+  }
 
   // login into WiFi
-  WiFi.begin(hlssid, hlpwd);
+  WiFi.begin(hlssid.c_str(), hlpwd.c_str());
   while (WiFi.status() != WL_CONNECTED) {
     delay(1);
   }
@@ -49,7 +46,6 @@ void setup() {
   }
 
   setupWebserver();
-
   filemgr.begin();
 }
 

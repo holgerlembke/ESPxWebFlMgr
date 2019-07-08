@@ -140,6 +140,8 @@ function uploadFile(file) {
   xhr.open('POST', '/r');
   var formdata = new FormData();
   formdata.append('uploadfile', file);
+  // not sure why, but with that the upload to esp32 is stable.
+  formdata.append('dummy', 'dummy');
   xhr.send(formdata);
 }
 

@@ -1,0 +1,8 @@
+// inline guard. Did I mention that c/c++ is broken by design?
+#ifndef ESPxWebFlMgrWp_h
+#define ESPxWebFlMgrWp_h
+
+// this file has been created by makeESPxWebFlMgrWp\do.cmd
+
+//*****************************************************************************************************
+static const char ESPxWebFlMgrWpindexpage[] PROGMEM = R"==x==(

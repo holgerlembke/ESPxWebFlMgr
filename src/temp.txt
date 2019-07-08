@@ -1,0 +1,171 @@
+  const byte copybuffersize = 100;
+		  
+  fileManager->setContentLength(CONTENT_LENGTH_UNKNOWN);
+  // fileManager->sendHeader(F("Content-Type"), F("text/text"));
+  // fileManager->sendHeader(F("Transfer-Encoding"), F("chunked"));
+  // fileManager->sendHeader(F("Connection"), F("close"));
+  fileManager->sendHeader(F("Content-Disposition"), F("attachment; filename=alles.zip"));
+  fileManager->sendHeader(F("Content-Transfer-Encoding"), F("binary"));
+  fileManager->send(200, F("application/octet-stream"), "");
+
+  // Pass 0: count files
+  int files = 0;
+  {
+    Dir dir = SPIFFS.openDir("/");
+    while ( (dir.next()) ) {
+      String fn = dir.fileName();
+      if ( (_ViewSysFiles) || (allowAccessToThisFile(fn)) ) {
+        files++;
+	  }
+	}
+	// Serial.println("Files: "+String(files));
+  }
+  // Store the crcs
+  uint32_t crc_32s[files];  
+  
+  // Pass 1: local headers + file
+  {
+    zipFileHeader zip;
+    zip.signature = 0x04034b50;
+    zip.versionneeded = 0;
+    zip.bitflags = 0;
+    zip.comp_method = 0; // stored
+    zip.lastModFileTime = 0x4fa5;
+    zip.lastModFileDate = 0xe44e;
+    zip.extra_field_len = 0;
+
+    Dir dir = SPIFFS.openDir("/");
+
+    int i = 0;
+    while ( (dir.next()) ) {
+      String fn = dir.fileName();
+
+      if ( (_ViewSysFiles) || (allowAccessToThisFile(fn)) ) {
+		fn.remove(0,1); // "/" filenames beginning with "/" dont work for Windows....
+
+        zip.comp_size = 0;
+        zip.uncompr_size = 0;
+        zip.crc_32 = 0;
+        zip.fname_len = fn.length();
+        WriteChunk((char*)&zip, sizeof(zip));
+        WriteChunk(fn.c_str(), zip.fname_len);
+
+//        Serial.print("Send: " + fn);
+        File f = dir.openFile("r");
+        int len = f.size();
+
+        // send crc+len later...
+        zipDataDescriptor datadiscr;
+		datadiscr.signature = 0x08074b50;
+        datadiscr.comp_size = len;
+        datadiscr.uncompr_size = len;
+
+        const char * footer = "\r\n";
+        char chunkSize[11];
+        sprintf(chunkSize, "%zx\r\n", len);
+        fileManager->client().write(chunkSize, strlen(chunkSize));
+
+        { // pff.
+          CRC32 crc;
+          byte b[copybuffersize];
+          int lenr = len;
+          while (lenr > 0) {
+            byte r = (lenr > copybuffersize) ? copybuffersize : lenr;
+            f.read(b, r);
+            crc.update(b, r);
+            fileManager->client().write(b,r);
+            lenr -= r;
+          }
+          datadiscr.crc32 = crc.finalize();
+		  crc_32s[i] = datadiscr.crc32;
+        }
+
+        fileManager->client().write(footer, 2);
+		
+        WriteChunk((char*)&datadiscr, sizeof(datadiscr));
+
+        f.close();
+        i++;
+/** /		
+        Serial.print(" ");
+        Serial.print(l);
+        Serial.println();
+/**/		
+      }
+    }
+  }
+
+  // Pass 2: Central directory Structur
+  {
+    zipEndOfDirectory eod;
+    eod.signature =  0x06054b50;
+    eod.nrofdisks = 0;
+    eod.diskwherecentraldirectorystarts = 0;
+    eod.nrofcentraldirectoriesonthisdisk = 0;
+	eod.totalnrofcentraldirectories = 0;
+    eod.sizeofcentraldirectory = 0;
+    eod.ofsetofcentraldirectoryrelativetostartofarchiv = 0;
+    eod.commentlength = 0;
+
+    zipCentralDirectoryFileHeader CDFH;
+
+    CDFH.signature = 0x02014b50;
+    CDFH.versionmadeby = 0;
+    CDFH.versionneededtoextract = 0;
+    CDFH.flag = 0;
+    CDFH.compressionmethode = 0; // Stored
+    CDFH.lastModFileTime = 0x4fa5;
+    CDFH.lastModFileDate = 0xe44e;
+    CDFH.extra_len = 0;
+    CDFH.comment_len = 0;
+    CDFH.diskstart = 0;
+    CDFH.internalfileattr = 0x01;
+    CDFH.externalfileattr = 0x20;
+    CDFH.relofsoflocalfileheader = 0;
+
+    Dir dir = SPIFFS.openDir("/");
+    int i = 0;
+    while ( (dir.next()) ) {
+      String fn = dir.fileName();
+
+      if ( (_ViewSysFiles) || (allowAccessToThisFile(fn)) ) {
+		fn.remove(0,1); // "/" filenames beginning with "/" dont work for Windows....
+//        Serial.print("CDFH: " + fn);
+        File f = dir.openFile("r");
+        int len = f.size();
+
+        CDFH.comp_size = len;
+        CDFH.uncompr_size = len;
+        CDFH.fname_len = fn.length();
+        CDFH.crc_32 = crc_32s[i];
+
+        f.close();
+
+        WriteChunk((char*)&CDFH, sizeof(CDFH));
+        WriteChunk(fn.c_str(), CDFH.fname_len);
+		
+		int ofs = sizeof(zipFileHeader) + len + CDFH.fname_len + sizeof(zipDataDescriptor);
+
+        // next position
+        CDFH.relofsoflocalfileheader += ofs;
+
+        // book keeping		
+		eod.nrofcentraldirectoriesonthisdisk++;
+		eod.totalnrofcentraldirectories++;
+		eod.ofsetofcentraldirectoryrelativetostartofarchiv += ofs;
+        eod.sizeofcentraldirectory += sizeof(CDFH) + CDFH.fname_len;
+		
+        i++;
+      }
+    }
+
+//    Serial.print("EOD: ");
+    WriteChunk((char*)&eod, sizeof(eod));
+//    Serial.println();
+  }
+
+  const char * endchunk = "0\r\n\r\n";
+  fileManager->client().write(endchunk, 5);
+
+  fileManager->sendContent("");
+  delay(1);
