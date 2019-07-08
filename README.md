@@ -3,7 +3,7 @@
 * Manage your SPIFFS files with a simple web based interface.
 * Supports Arduino ESP8266 and Arduino ESP32.
 
-![this is it](https://raw.githubusercontent.com/holgerlembke/ESPx8266WebFlMgr/master/img/screenshot1.png)
+![this is it](https://raw.githubusercontent.com/holgerlembke/ESP8266WebFlMgr/master/img/screenshot1.png)
 
 ## Usage
 * Click on the filename to download the file.
