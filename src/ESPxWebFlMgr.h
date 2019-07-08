@@ -100,16 +100,16 @@ class ESPxWebFlMgr {
 /*
       History
 	  
-	    -- 2019-07-07
+        -- 2019-07-07
            + Renamed to ESPxWebFlMgr and made it work with esp32 and esp8266 
            + separated file manager web page, "build script" to generate it
 		   
-	    -- 2019-07-06
+        -- 2019-07-06
            + "Download all files" creates a zip file from all files and downloads it
            + option to set background color
            - html5 fixes
 		   
-	    -- 2019-07-03
+        -- 2019-07-03
            + Public Release on https://github.com/holgerlembke/ESP8266WebFlMgr
 	  
 	  
