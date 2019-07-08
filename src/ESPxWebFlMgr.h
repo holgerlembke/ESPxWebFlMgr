@@ -21,7 +21,7 @@
 /* undefine this to save about 10k code space. 
    it requires to put the files from "<library>/filemanager" into the FS. No free lunch.
 */
-// #define fileManagerServerStaticsInternally  
+//#define fileManagerServerStaticsInternally  
 
 // will show the Edit-Button for every file type, even binary and such.
 //#define fileManagerEditEverything
@@ -101,16 +101,16 @@ class ESPxWebFlMgr {
       History
 	  
 	    -- 2019-07-07
-	       + Renamed to ESPxWebFlMgr and made it work with esp32 and esp8266 
-		   + separated file manager web page, "build script" to generate it
+           + Renamed to ESPxWebFlMgr and made it work with esp32 and esp8266 
+           + separated file manager web page, "build script" to generate it
 		   
 	    -- 2019-07-06
-	       + "Download all files" creates a zip file from all files and downloads it
-		   + option to set background color
-		   - html5 fixes
+           + "Download all files" creates a zip file from all files and downloads it
+           + option to set background color
+           - html5 fixes
 		   
 	    -- 2019-07-03
-	       + Public Release on https://github.com/holgerlembke/ESP8266WebFlMgr
+           + Public Release on https://github.com/holgerlembke/ESP8266WebFlMgr
 	  
 	  
 	  Things to do
