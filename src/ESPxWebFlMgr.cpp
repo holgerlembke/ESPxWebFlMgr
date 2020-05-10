@@ -15,7 +15,18 @@
 #include <WebServer.h>
 #include <FS.h>
 #include <SPIFFS.h>
+#include <detail/RequestHandlersImpl.h>
 #endif
+
+
+String getContentType(const String& path) {
+#ifdef ESP8266
+  return mime::getContentType(path);
+#endif
+#ifdef ESP32
+  return StaticRequestHandler::getContentType(path);
+#endif
+}
 
 
 //*****************************************************************************************************
@@ -114,7 +125,7 @@ void ESPxWebFlMgr::fileManagerNotFound(void) {
     uri = "/fm.html";
   }
 
-  String contentTyp = mime::getContentType(uri);
+  String contentTyp = getContentType(uri);
 
   if (SPIFFS.exists(uri)) {
     File f = SPIFFS.open(uri, "r");
@@ -313,7 +324,7 @@ void ESPxWebFlMgr::fileManagerFileListInsert(void) {
       }
       // for editor
 #ifndef fileManagerEditEverything
-      String contentTyp = mime::getContentType(fn);
+      String contentTyp = getContentType(fn);
       if ( (contentTyp.startsWith("text/")) ||
            (contentTyp.startsWith("application/j"))  ) // json, javascript and everything else....
 #endif
