@@ -17,8 +17,6 @@
 #include <SPIFFS.h>
 #endif
 
-// getting access to the nice mime-type-table and getContentType()
-#include "detail/RequestHandlersImpl.h"
 
 //*****************************************************************************************************
 ESPxWebFlMgr::ESPxWebFlMgr(word port) {
@@ -116,7 +114,7 @@ void ESPxWebFlMgr::fileManagerNotFound(void) {
     uri = "/fm.html";
   }
 
-  String contentTyp = StaticRequestHandler::getContentType(uri);
+  String contentTyp = mime::getContentType(uri);
 
   if (SPIFFS.exists(uri)) {
     File f = SPIFFS.open(uri, "r");
@@ -315,7 +313,7 @@ void ESPxWebFlMgr::fileManagerFileListInsert(void) {
       }
       // for editor
 #ifndef fileManagerEditEverything
-      String contentTyp = StaticRequestHandler::getContentType(fn);
+      String contentTyp = mime::getContentType(fn);
       if ( (contentTyp.startsWith("text/")) ||
            (contentTyp.startsWith("application/j"))  ) // json, javascript and everything else....
 #endif
