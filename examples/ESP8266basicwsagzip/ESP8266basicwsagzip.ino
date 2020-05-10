@@ -1,5 +1,5 @@
 #include <ESP8266WiFi.h>
-#include <ESP8266WebFlMgr.h>
+#include <ESPxWebFlMgr.h>
 // getting access to the nice mime-type-table and getContentType()
 #include "detail/RequestHandlersImpl.h"
 #include <FS.h>
