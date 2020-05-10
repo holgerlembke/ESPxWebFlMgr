@@ -1,5 +1,5 @@
 #include <ESP8266WiFi.h>
-#include <ESP8266WebFlMgr.h>
+#include <ESPxWebFlMgr.h>
 #include <FS.h>
 
 const word filemanagerport = 8080;
