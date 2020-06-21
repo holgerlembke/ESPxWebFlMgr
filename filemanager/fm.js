@@ -129,12 +129,20 @@ function abed() {
   getfileinsert();
 }
 
-function uploadFile(file) {
+var uploaddone = true; // hlpr for multiple file uploads
+
+function uploadFile(file, islast) {
+  uploaddone = false;
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function () {
+    // console.log(xhr.status);
     var DONE = this.DONE || 4;
     if (this.readyState === DONE) {
-      getfileinsert();
+      if (islast) {
+        getfileinsert();
+        console.log('last file');
+      }
+      uploaddone = true;
     }
   };
   xhr.open('POST', '/r');
@@ -145,7 +153,25 @@ function uploadFile(file) {
   xhr.send(formdata);
 }
 
-function dropHandler(ev) {
+var globaldropfilelisthlpr = null; // read-only-list, no shift()
+var transferitem = 0;
+var uploadFileProzessorhndlr = null;
+
+function uploadFileProzessor() {
+    if (uploaddone) {
+        if (transferitem==globaldropfilelisthlpr.length) {
+            clearInterval(uploadFileProzessorhndlr);
+        } else {
+            var file = globaldropfilelisthlpr[transferitem];
+            console.log('process file ' + file.name);
+            transferitem++;
+            uploadFile(file,transferitem==globaldropfilelisthlpr.length);
+        }
+    }
+}
+
+/*
+function dropHandlerALT(ev) {
   console.log('File(s) dropped');
 
   document.getElementById('msg').innerHTML = "Please wait. Transferring file...";
@@ -163,6 +189,31 @@ function dropHandler(ev) {
         console.log('.1. file[' + i + '].name = ' + file.name);
       }
     }
+  } else {
+    // Use DataTransfer interface to access the file(s)
+    for (var i = 0; i < ev.dataTransfer.files.length; i++) {
+      console.log('.2. file[' + i + '].name = ' + ev.dataTransfer.files[i].name);
+    }
+  }
+}
+*/
+
+function dropHandler(ev) {
+  console.log('File(s) dropped');
+  
+  globaldropfilelisthlpr = ev.dataTransfer;
+  transferitem = 0;
+
+  document.getElementById('msg').innerHTML = "Please wait. Transferring file...";
+
+  // Prevent default behavior (Prevent file from being opened)
+  ev.preventDefault();
+
+  if (ev.dataTransfer.items) {
+      var data = ev.dataTransfer;
+      globaldropfilelisthlpr = data.files;
+      uploadFileProzessorhndlr = setInterval(uploadFileProzessor,1000);
+      console.log('Init upload list.');
   } else {
     // Use DataTransfer interface to access the file(s)
     for (var i = 0; i < ev.dataTransfer.files.length; i++) {
