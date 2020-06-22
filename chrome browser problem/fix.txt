@@ -1,0 +1,33 @@
+
+File: ....\esp32\hardware\esp32\versionnumberwashere\libraries\WebServer\src\WebServer.cpp
+
+void WebServer::handleClient() {
+....
+    case HC_WAIT_READ:
+      // Wait for data from client to become available
+      if (_currentClient.available()) {
+        if (_parseRequest(_currentClient)) {
+          // because HTTP_MAX_SEND_WAIT is expressed in milliseconds,
+          // it must be divided by 1000
+          _currentClient.setTimeout(HTTP_MAX_SEND_WAIT / 1000);
+          _contentLength = CONTENT_LENGTH_NOT_SET;
+          _handleRequest();
+
+          /* this comment fixes the chrome browser net::ERR_CONNECTION_RESET problem
+          if (_currentClient.connected()) {
+            _currentStatus = HC_WAIT_CLOSE;
+            _statusChange = millis();
+            keepCurrentClient = true;
+          }
+          */
+        }
+      } else { // !_currentClient.available()
+        if (millis() - _statusChange <= HTTP_MAX_DATA_WAIT) {
+          keepCurrentClient = true;
+        }
+        callYield = true;
+      }
+      break;
+    case HC_WAIT_CLOSE:
+....
+}
