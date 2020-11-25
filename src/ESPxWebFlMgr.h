@@ -21,7 +21,7 @@
 /* undefine this to save about 10k code space.
    it requires to put the files from "<library>/filemanager" into the FS. No free lunch.
 */
-//#define fileManagerServerStaticsInternally
+#define fileManagerServerStaticsInternally
 
 // will show the Edit-Button for every file type, even binary and such.
 //#define fileManagerEditEverything
