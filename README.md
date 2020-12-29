@@ -22,6 +22,10 @@ The file manager comes in two flavors. This is the default modus: just use it. E
 For those who need to save about 10k code space the web page can also be moved into the SPIFFS space. Copy the content of
 the folder __filemanager__ in the SPIFFS and comment out the line __#define fileManagerServerStaticsInternally__
 
+### File System: LittleFS or SPIFFS
+
+ESPxWebFlMgr is currently in a transition phase from SPIFFS to LittleFS. Current status: ESP8266 is default LitteFS with fallback to SPIFFS, ESP32 SPIFFS only (I assume it is easy to Switch, but I didn't do any tests...)
+
 ### Build in GZIPPER
 
 The GZIPPER can compress the files in you SPIFFS into gzip-web-compatible files.

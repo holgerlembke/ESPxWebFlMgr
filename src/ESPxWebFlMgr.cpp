@@ -3,6 +3,7 @@
 #include <inttypes.h>
 #include <ESPxWebFlMgr.h>
 #include <ESPxWebFlMgrWp.h>
+#include <ESPxWebFlMgrWpF.h>
 
 #include <crc32.h>
 
@@ -127,8 +128,8 @@ void ESPxWebFlMgr::fileManagerNotFound(void) {
 
   String contentTyp = getContentType(uri);
 
-  if (SPIFFS.exists(uri)) {
-    File f = SPIFFS.open(uri, "r");
+  if (ESPxWebFlMgr_FileSystem.exists(uri)) {
+    File f = ESPxWebFlMgr_FileSystem.open(uri, "r");
     if (f) {
       if (fileManager->streamFile(f, contentTyp) != f.size()) {
         // Serial.println(F("Sent less data than expected!"));
@@ -166,12 +167,12 @@ String ESPxWebFlMgr::dispIntDotted(size_t i) {
 size_t ESPxWebFlMgr::totalBytes(void) {
 #ifdef ESP8266
   FSInfo info;
-  SPIFFS.info(info);
+  ESPxWebFlMgr_FileSystem.info(info);
   return info.totalBytes;
 #endif
 
 #ifdef ESP32
-  return SPIFFS.totalBytes();
+  return ESPxWebFlMgr_FileSystem.totalBytes();
 #endif
 }
 
@@ -179,12 +180,12 @@ size_t ESPxWebFlMgr::totalBytes(void) {
 size_t ESPxWebFlMgr::usedBytes(void) {
 #ifdef ESP8266
   FSInfo info;
-  SPIFFS.info(info);
+  ESPxWebFlMgr_FileSystem.info(info);
   return info.usedBytes;
 #endif
 
 #ifdef ESP32
-  return SPIFFS.usedBytes();
+  return ESPxWebFlMgr_FileSystem.usedBytes();
 #endif
 }
 
@@ -261,7 +262,7 @@ File ESPxWebFlMgr::nextFile(Dir &dir) {
   return dir.openFile("r");
 }
 File ESPxWebFlMgr::firstFile(Dir &dir) {
-  dir = SPIFFS.openDir("/");
+  dir = ESPxWebFlMgr_FileSystem.openDir("/");
   return nextFile(dir);
 }
 #endif
@@ -271,7 +272,7 @@ File ESPxWebFlMgr::nextFile(Dir &dir) {
   return dir.openNextFile();
 }
 File ESPxWebFlMgr::firstFile(Dir &dir) {
-  dir = SPIFFS.open("/","r");
+  dir = ESPxWebFlMgr_FileSystem.open("/","r");
   return nextFile(dir);
 }
 #endif
@@ -283,7 +284,8 @@ void ESPxWebFlMgr::fileManagerFileListInsert(void) {
 
   fileManager->sendContent(F("<div class=\"cc\"><div class=\"gc\">"));
 
-  bool gzipperexists = ((SPIFFS.exists("/gzipper.js.gz")) || (SPIFFS.exists("/gzipper.js")));
+  bool gzipperexists = ( (ESPxWebFlMgr_FileSystem.exists("/gzipper.js.gz")) || 
+                         (ESPxWebFlMgr_FileSystem.exists("/gzipper.js")) );
 
   // List files
   int i = 0;
@@ -326,7 +328,7 @@ void ESPxWebFlMgr::fileManagerFileListInsert(void) {
 #ifndef fileManagerEditEverything
       String contentTyp = getContentType(fn);
       if ( (contentTyp.startsWith("text/")) ||
-           (contentTyp.startsWith("application/j"))  ) // json, javascript and everything else....
+           (contentTyp.startsWith("application/j"))  ) // boldly assume: json, javascript and everything else is edible....
 #endif
       {
         fc += "<button title=\"Edit\" onclick=\"editfile('" + fn + "')\" class=\"b\">E</button> ";
@@ -386,20 +388,10 @@ void ESPxWebFlMgr::fileManagerFileEditorInsert(void) {
     fileManager->setContentLength(CONTENT_LENGTH_UNKNOWN);
     fileManager->send(200, F("text/html"), String());
 
-    fileManager->sendContent(F("<form><textarea id=\"tect\" rows=\"25\" cols=\"80\">"));
+    fileManager->sendContent(ESPxWebFlMgrWpFormIntro);
 
-    /*
-      if (SPIFFS.exists(fn)) {
-      Serial.println("FN send");
-      File f = SPIFFS.open(fn, "r");
-      if (f) {
-        fileManager->client().write(f);
-        f.close();
-      }
-      }
-    */
-    if (SPIFFS.exists(fn)) {
-      File f = SPIFFS.open(fn, "r");
+    if (ESPxWebFlMgr_FileSystem.exists(fn)) {
+      File f = ESPxWebFlMgr_FileSystem.open(fn, "r");
       if (f) {
         do {
           String l = f.readStringUntil('\n') + '\n';
@@ -410,15 +402,9 @@ void ESPxWebFlMgr::fileManagerFileEditorInsert(void) {
       }
     }
 
-    fileManager->sendContent(F("</textarea></form><button title=\"Save file\" onclick='sved(\""));
+    fileManager->sendContent(ESPxWebFlMgrWpFormExtro1);
     fileManager->sendContent(fn);
-    fileManager->sendContent(F("\");' >Save</button>"));
-    fileManager->sendContent(F("&nbsp;<button title=\"Abort editing\" onclick=\"abed();\" >Abort editing</button>"));
-    //fileManager->sendContent(F("</form>"));
-
-    fileManager->sendContent(F("<script id=\"info\">document.getElementById('o3').innerHTML = \""));
-    fileManager->sendContent("File: ");
-    fileManager->sendContent(F("\";</script>"));
+    fileManager->sendContent(ESPxWebFlMgrWpFormExtro2);
 
     fileManager->sendContent("");
   } else {
@@ -460,7 +446,7 @@ void ESPxWebFlMgr::fileManagerReceiver(void) {
     // cut length
     filename = CheckFileNameLengthLimit(filename);
 
-    fsUploadFile = SPIFFS.open(filename, "w");
+    fsUploadFile = ESPxWebFlMgr_FileSystem.open(filename, "w");
   } else if (upload.status == UPLOAD_FILE_WRITE) {
 //    Serial.print("handleFileUpload Data: ");
 //    Serial.println(upload.currentSize);
@@ -601,7 +587,9 @@ void ESPxWebFlMgr::getAllFilesInOneZIP(void) {
       String fn = file.name();
 
       if ( (_ViewSysFiles) || (allowAccessToThisFile(fn)) ) {
-        fn.remove(0,1); // "/" filenames beginning with "/" dont work for Windows....
+        if (fn.indexOf("/")==0) {
+          fn.remove(0,1); // "/" filenames beginning with "/" dont work for Windows....
+        }  
 
         zip.comp_size = 0;
         zip.uncompr_size = 0;
@@ -692,7 +680,9 @@ void ESPxWebFlMgr::getAllFilesInOneZIP(void) {
       String fn = file.name();
 
       if ( (_ViewSysFiles) || (allowAccessToThisFile(fn)) ) {
-        fn.remove(0,1); // "/" filenames beginning with "/" dont work for Windows....
+        if (fn.indexOf("/")==0) {
+          fn.remove(0,1); // "/" filenames beginning with "/" dont work for Windows....
+        }  
 //        Serial.print("CDFH: " + fn);
         // File f = dir.open("r",FILE_READ);
         int len = file.size();
@@ -768,11 +758,15 @@ void ESPxWebFlMgr::fileManagerCommandExecutor(void) {
   if ( (fileManager->args() == 1) && (fileManager->argName(0) == "dwn") ) {
     String fn = fileManager->arg(0);
     if ( (_ViewSysFiles) || (allowAccessToThisFile(fn)) ) {
-      File f = SPIFFS.open(fn, "r");
+      File f = ESPxWebFlMgr_FileSystem.open(fn, "r");
       if (f) {
         fileManager->sendHeader(F("Content-Type"), F("text/text"));
         fileManager->sendHeader(F("Connection"), F("close"));
-        fileManager->sendHeader(F("Content-Disposition"), "attachment; filename=" + fn.substring(1));
+        if (fn.indexOf("/")==0) {
+          fileManager->sendHeader(F("Content-Disposition"), "attachment; filename=" + fn.substring(1));
+        } else {
+          fileManager->sendHeader(F("Content-Disposition"), "attachment; filename=" + fn);
+        }
         fileManager->sendHeader(F("Content-Transfer-Encoding"), F("binary"));
         if (fileManager->streamFile(f, "application/octet-stream") != f.size()) {
           Serial.println(F("Sent less data than expected!"));
@@ -788,7 +782,7 @@ void ESPxWebFlMgr::fileManagerCommandExecutor(void) {
   if ( (fileManager->args() == 1) && (fileManager->argName(0) == "del") ) {
     String fn = fileManager->arg(0);
     if ( (_ViewSysFiles) || (allowAccessToThisFile(fn)) ) {
-      SPIFFS.remove(fn);
+      ESPxWebFlMgr_FileSystem.remove(fn);
     }
   }
 
@@ -799,7 +793,7 @@ void ESPxWebFlMgr::fileManagerCommandExecutor(void) {
     if ( (_ViewSysFiles) || (allowAccessToThisFile(fn)) ) {
       String fn2 = CheckFileNameLengthLimit(fileManager->arg(1));
       if ( (_ViewSysFiles) || (allowAccessToThisFile(fn2)) ) {
-        SPIFFS.rename(fn, fn2);
+        ESPxWebFlMgr_FileSystem.rename(fn, fn2);
       }
     }
   }

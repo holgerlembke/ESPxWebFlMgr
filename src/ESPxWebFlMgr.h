@@ -2,20 +2,47 @@
 #ifndef ESPxWebFlMgr_h
 #define ESPxWebFlMgr_h
 
+/*
+  Changes
+    V1.00
+     + out of V0.9998...
+     + ESP8266: LittleFS is default 
+     + javascript: added "msgline();"
+     + javascript: added "Loading..." as a not-working-hint to show that Javascript is disabled
+     + cleaning up the "/"-stuff (from SPIFF with leading "/" to LittleFS without...)
+     + Warning: esp8266 2.7.4 has an error in mime::getContentType(path) for .TXT. Fix line 65 is { kTxtSuffix, kTxt },
+     + review of "edit file", moved some stuff to ESPxWebFlMgrWpF.h
+*/
+
 #include <Arduino.h>
 #include <inttypes.h>
 
+// define file system, if no otherwise defined.
+#ifndef ESPxWebFlMgr_FileSystem
+  #define ESPxWebFlMgr_FileSystem LittleFS
+  // SPIFFS is deprecated.
+  //#define ESPxWebFlMgr_FileSystem_FileSystem SPIFFS
+#endif
+
 #ifdef ESP8266
-#include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
-#include <FS.h>
+  #include <ESP8266WiFi.h>
+  #include <ESP8266WebServer.h>
+  #include <FS.h>
+  #if ESPxWebFlMgr_FileSystem==LittleFS
+    #include <LittleFS.h>
+  #endif
 #endif
 
 #ifdef ESP32
-#include <WiFi.h>
-#include <WebServer.h>
-#include <FS.h>
-#include <SPIFFS.h>
+  #include <WiFi.h>
+  #include <WebServer.h>
+  #include <FS.h>
+  #include <SPIFFS.h>
+#endif
+
+
+#ifndef ESPxWebFlMgr_FileSystem
+#pragma message ("ESPxWebFlMgr_FileSystem not defined.")
 #endif
 
 /* undefine this to save about 10k code space.

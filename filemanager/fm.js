@@ -1,5 +1,5 @@
 function compressurlfile(source) {
-  document.getElementById('msg').innerHTML = "Fetching file...";
+  msgline("Fetching file...");
   var request = new XMLHttpRequest();
   request.onreadystatechange = function () {
     var DONE = this.DONE || 4;
@@ -9,7 +9,7 @@ function compressurlfile(source) {
       var out = gzip.zip(data, options);
       var bout = new Uint8Array(out); // out is 16 bits...
 
-      document.getElementById('msg').innerHTML = "Sending compressed file...";
+      msgline("Sending compressed file...");
       var sendback = new XMLHttpRequest();
       sendback.onreadystatechange = function () {
         var DONE = this.DONE || 4;
@@ -29,6 +29,7 @@ function compressurlfile(source) {
 }
 
 function getfileinsert() {
+  msgline("Fetching files infos...");
   var request = new XMLHttpRequest();
   request.onreadystatechange = function () {
     var DONE = this.DONE || 4;
@@ -36,7 +37,7 @@ function getfileinsert() {
       var res = this.responseText.split("##");
       document.getElementById('fi').innerHTML = res[0];
       document.getElementById("o3").innerHTML = res[1];
-      document.getElementById('msg').innerHTML = "";
+      msgline("");
     }
   };
   request.open('GET', '/i', true);
@@ -61,7 +62,7 @@ function downloadfile(filename) {
 
 function deletefile(filename) {
   if (confirm("Really delete " + filename)) {
-    document.getElementById('msg').innerHTML = "Please wait. Delete in progress...";
+    msgline("Please wait. Delete in progress...");
     executecommand("del=" + filename);
   }
 }
@@ -69,7 +70,7 @@ function deletefile(filename) {
 function renamefile(filename) {
   var newname = prompt("new name for " + filename, filename);
   if (newname != null) {
-    document.getElementById('msg').innerHTML = "Please wait. Rename in progress...";
+    msgline("Please wait. Rename in progress...");
     executecommand("ren=" + filename + "&new=" + newname);
   }
 }
@@ -77,7 +78,7 @@ function renamefile(filename) {
 var editxhr;
 
 function editfile(filename) {
-  document.getElementById('msg').innerHTML = "Please wait. Creating editor...";
+  msgline("Please wait. Creating editor...");
 
   editxhr = new XMLHttpRequest();
   editxhr.onreadystatechange = function () {
@@ -85,7 +86,7 @@ function editfile(filename) {
     if (this.readyState === DONE) {
       document.getElementById('fi').innerHTML = editxhr.responseText;
       document.getElementById("o3").innerHTML = "Edit " + filename;
-      document.getElementById('msg').innerHTML = "";
+      msgline("");
     }
   };
   editxhr.open('GET', '/e?edit=' + filename, true);
@@ -204,7 +205,7 @@ function dropHandler(ev) {
   globaldropfilelisthlpr = ev.dataTransfer;
   transferitem = 0;
 
-  document.getElementById('msg').innerHTML = "Please wait. Transferring file...";
+  msgline("Please wait. Transferring file...");
 
   // Prevent default behavior (Prevent file from being opened)
   ev.preventDefault();
@@ -229,10 +230,14 @@ function dragOverHandler(ev) {
   ev.preventDefault();
 }
 
+function msgline(msg) {
+  document.getElementById('msg').innerHTML = msg;
+}
+
 function downloadall() {
-  document.getElementById('msg').innerHTML = "Sending all files in one zip.";
+  msgline("Sending all files in one zip.");
   window.location.href = "/c?za=all";
-  document.getElementById('msg').innerHTML = "";
+  msgline("");
 }
 
 //->
