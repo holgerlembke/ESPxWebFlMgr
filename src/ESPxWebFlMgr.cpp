@@ -574,7 +574,7 @@ void ESPxWebFlMgr::getAllFilesInOneZIP(void) {
     zipFileHeader zip;
     zip.signature = 0x04034b50;
     zip.versionneeded = 0;
-    zip.bitflags = 0;
+    zip.bitflags = 1 << 3;
     zip.comp_method = 0; // stored
     zip.lastModFileTime = 0x4fa5;
     zip.lastModFileDate = 0xe44e;

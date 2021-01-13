@@ -222,6 +222,7 @@ function uploadFileProzessor() {
             clearInterval(uploadFileProzessorhndlr);
         } else {
             var file = globaldropfilelisthlpr[transferitem];
+            msgline("Please wait. Transferring file "+file.name+"...");
             console.log('process file ' + file.name);
             transferitem++;
             uploadFile(file,transferitem==globaldropfilelisthlpr.length);

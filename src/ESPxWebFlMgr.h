@@ -4,6 +4,10 @@
 
 /*
   Changes
+    V1.01
+     + added file name progress while uploading
+     x fixed error in ZIP file structure (zip.bitflags needs a flag)
+
     V1.00
      + out of V0.9998...
      + ESP8266: LittleFS is default 
