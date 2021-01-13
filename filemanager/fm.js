@@ -164,40 +164,13 @@ function uploadFileProzessor() {
             clearInterval(uploadFileProzessorhndlr);
         } else {
             var file = globaldropfilelisthlpr[transferitem];
+            msgline("Please wait. Transferring file "+file.name+"...");
             console.log('process file ' + file.name);
             transferitem++;
             uploadFile(file,transferitem==globaldropfilelisthlpr.length);
         }
     }
 }
-
-/*
-function dropHandlerALT(ev) {
-  console.log('File(s) dropped');
-
-  document.getElementById('msg').innerHTML = "Please wait. Transferring file...";
-
-  // Prevent default behavior (Prevent file from being opened)
-  ev.preventDefault();
-
-  if (ev.dataTransfer.items) {
-    // Use DataTransferItemList interface to access the file(s)
-    for (var i = 0; i < ev.dataTransfer.items.length; i++) {
-      // If dropped items aren't files, reject them
-      if (ev.dataTransfer.items[i].kind === 'file') {
-        var file = ev.dataTransfer.items[i].getAsFile();
-        uploadFile(file);
-        console.log('.1. file[' + i + '].name = ' + file.name);
-      }
-    }
-  } else {
-    // Use DataTransfer interface to access the file(s)
-    for (var i = 0; i < ev.dataTransfer.files.length; i++) {
-      console.log('.2. file[' + i + '].name = ' + ev.dataTransfer.files[i].name);
-    }
-  }
-}
-*/
 
 function dropHandler(ev) {
   console.log('File(s) dropped');
