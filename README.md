@@ -20,21 +20,21 @@ The file manager comes in two flavors. This is the default modus: just use it. E
 ### "external web page"
 
 For those who need to save about 10k code space the web page can also be moved into the SPIFFS space. Copy the content of
-the folder __filemanager__ in the SPIFFS and comment out the line __#define fileManagerServerStaticsInternally__
+the folder __filemanager__ on the device and comment out the line __#define fileManagerServerStaticsInternally__
 
 ### File System: LittleFS or SPIFFS
 
-ESPxWebFlMgr is currently in a transition phase from SPIFFS to LittleFS. Current status: ESP8266 is default LitteFS with fallback to SPIFFS, ESP32 SPIFFS only (I assume it is easy to Switch, but I didn't do any tests...)
+ESPxWebFlMgr is currently in a transition phase from SPIFFS to LittleFS. Current status: ESP8266 is default LitteFS with fallback to SPIFFS, ESP32 SPIFFS only (I assume it is easy to switch, but I didn't do any tests...)
 
 ### Build in GZIPPER
 
-The GZIPPER can compress the files in you SPIFFS into gzip-web-compatible files.
+The GZIPPER can compress the files in you devices file system into gzip-web-compatible files.
 
-To use the "on the fly" GZIPPER you need to put the file "gzipper.js" from "gzip files" folder in the SPIFFS. Click the "C"-button to compress a file. If the compression factor meets your expectations delete the source file in SPIFFS.
+To use the "on the fly" GZIPPER you need to upload the file "gzipper.js" from "gzip files" folder. Click the "C"-button to compress a file. If the compression factor meets your expectations delete the source file.
 
 ## System files
 
-Because the SPIFFS file system is feature limited there is no real concept for separating "internal files" from "web server allowed files".
+Because the file system is feature limited there is no real concept for separating "internal files" from "web server allowed files".
 
 My solution of choice is that all internal files start with "/." (slash dot). Your idea might differ.
 
@@ -44,7 +44,7 @@ Use __.setViewSysFiles(bool)__ to choose whether the file manager shows these fi
 
 ## The Editor
 
-It is very basic. It will fail in a lot of cases. Use it as fast file viewer or if in distress. Instead I would recommend editing with Notepad++ or Visual Studio Code and upload the files.
+It is basic. It works. You. will. create. backups. before. editing!
 
 # Examples
 
@@ -77,5 +77,3 @@ Put the sample files from "simplewebpage" for a simple web page on the server.
 * browserify from http://browserify.org/
 * Arduino core for ESP8266 WiFi chip from https://github.com/esp8266/Arduino
 * Arduino core for ESP32 WiFi chip from https://github.com/espressif/arduino-esp32
-
-
