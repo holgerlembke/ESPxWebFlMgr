@@ -1,0 +1,10 @@
+to fix the "edit button no show problem" check that 
+esp8266\2.7.4\libraries\ESP8266WebServer\src\detail\mimetable.cpp at about line 61 looks like
+
+```
+const Entry mimeTable[maxType] PROGMEM =
+{
+    { kHtmlSuffix, kHtml },
+    { kHtmSuffix, kHtml },
+    { kTxtSuffix, kTxt },   // <----- error was here.
+```    
