@@ -4,6 +4,9 @@
 
 /*
   Changes
+    V1.02
+     x fixed the way to select the file system by conditional defines
+
     V1.01
      + added file name progress while uploading
      x fixed error in ZIP file structure (zip.bitflags needs a flag)
@@ -21,20 +24,19 @@
 #include <Arduino.h>
 #include <inttypes.h>
 
-// define file system, if no otherwise defined.
-#ifndef ESPxWebFlMgr_FileSystem
-  #define ESPxWebFlMgr_FileSystem LittleFS
-  // SPIFFS is deprecated.
-  //#define ESPxWebFlMgr_FileSystem_FileSystem SPIFFS
-#endif
+// file system default for esp8266 is LittleFS, for ESP32 it is SPIFFS (no time to check...)
 
 #ifdef ESP8266
   #include <ESP8266WiFi.h>
   #include <ESP8266WebServer.h>
   #include <FS.h>
-  #if ESPxWebFlMgr_FileSystem==LittleFS
-    #include <LittleFS.h>
-  #endif
+  //
+  #include <LittleFS.h>
+  #define ESPxWebFlMgr_FileSystem LittleFS
+  /*
+  #include <SPIFFS.h>
+  #define ESPxWebFlMgr_FileSystem SPIFFS
+  */
 #endif
 
 #ifdef ESP32
@@ -42,6 +44,7 @@
   #include <WebServer.h>
   #include <FS.h>
   #include <SPIFFS.h>
+  #define ESPxWebFlMgr_FileSystem SPIFFS
 #endif
 
 
