@@ -77,3 +77,4 @@ Put the sample files from "simplewebpage" for a simple web page on the server.
 * browserify from http://browserify.org/
 * Arduino core for ESP8266 WiFi chip from https://github.com/esp8266/Arduino
 * Arduino core for ESP32 WiFi chip from https://github.com/espressif/arduino-esp32
+* Infinidash certification NDA toolkit
