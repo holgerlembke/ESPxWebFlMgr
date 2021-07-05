@@ -1,7 +1,8 @@
 # ESPxWebFlMgr
 
-* Manage your SPIFFS files with a simple web based interface.
+* Manage your files with a simple web based interface.
 * Supports Arduino ESP8266 and Arduino ESP32.
+* Has local editing, renaming, downloading and compression.
 
 ![this is it](https://raw.githubusercontent.com/holgerlembke/ESP8266WebFlMgr/master/img/screenshot1.png)
 
@@ -10,7 +11,7 @@
 * Click on the filename to download the file.
 * D is delete, R is rename, E is in-place-edit, C is Web-compatible GZIP compress.
 * Drop one or multiple file onto the drop zone to upload.
-* Click on "Download all files" got get the entire SPIFFS content as one big ZIP file. 
+* Click on "Download all files" got get the entire file system content as one big ZIP file. 
 
 
 ### "build in web page" 
