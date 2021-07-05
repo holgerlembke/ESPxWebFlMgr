@@ -20,7 +20,7 @@ The file manager comes in two flavors. This is the default modus: just use it. E
 
 ### "external web page"
 
-For those who need to save about 10k code space the web page can also be moved into the SPIFFS space. Copy the content of
+For those who need to save about 10k code space the web page can also be moved into the file system space. Copy the content of
 the folder __filemanager__ on the device and comment out the line __#define fileManagerServerStaticsInternally__
 
 ### File System: LittleFS or SPIFFS
