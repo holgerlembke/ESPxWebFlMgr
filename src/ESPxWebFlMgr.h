@@ -6,6 +6,7 @@
   Changes
     V1.03
      x removed all SPIFFS from ESP32 version, switched fully to LittleFS
+     x fixed rename+delete for ESP32+LittleFS (added "/")
 
     V1.02
      x fixed the way to select the file system by conditional defines

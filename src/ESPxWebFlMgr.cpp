@@ -782,7 +782,7 @@ void ESPxWebFlMgr::fileManagerCommandExecutor(void) {
   if ( (fileManager->args() == 1) && (fileManager->argName(0) == "del") ) {
     String fn = fileManager->arg(0);
     if ( (_ViewSysFiles) || (allowAccessToThisFile(fn)) ) {
-      ESPxWebFlMgr_FileSystem.remove(fn);
+      ESPxWebFlMgr_FileSystem.remove("/"+fn);    // Add slash
     }
   }
 
@@ -793,7 +793,7 @@ void ESPxWebFlMgr::fileManagerCommandExecutor(void) {
     if ( (_ViewSysFiles) || (allowAccessToThisFile(fn)) ) {
       String fn2 = CheckFileNameLengthLimit(fileManager->arg(1));
       if ( (_ViewSysFiles) || (allowAccessToThisFile(fn2)) ) {
-        ESPxWebFlMgr_FileSystem.rename(fn, fn2);
+        ESPxWebFlMgr_FileSystem.rename("/"+fn, "/"+fn2);
       }
     }
   }
