@@ -4,6 +4,9 @@
 
 /*
   Changes
+    V1.03
+     x removed all SPIFFS from ESP32 version, switched fully to LittleFS
+
     V1.02
      x fixed the way to select the file system by conditional defines
 
@@ -43,8 +46,8 @@
   #include <WiFi.h>
   #include <WebServer.h>
   #include <FS.h>
-  #include <SPIFFS.h>
-  #define ESPxWebFlMgr_FileSystem SPIFFS
+  #include <LittleFS.h>
+  #define ESPxWebFlMgr_FileSystem LittleFS
 #endif
 
 
