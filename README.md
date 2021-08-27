@@ -25,7 +25,9 @@ the folder __filemanager__ on the device and comment out the line __#define file
 
 ### File System: LittleFS or SPIFFS
 
-ESPxWebFlMgr is currently in a transition phase from SPIFFS to LittleFS. Current status: ESP8266 is default LitteFS with fallback to SPIFFS, ESP32 SPIFFS only (I assume it is easy to switch, but I didn't do any tests...)
+ESPxWebFlMgr should be full LittleFS by now. Report any SPIFFS zombies.
+
+<del>ESPxWebFlMgr is currently in a transition phase from SPIFFS to LittleFS. Current status: ESP8266 is default LitteFS with fallback to SPIFFS, ESP32 SPIFFS only (I assume it is easy to switch, but I didn't do any tests...)<del>
 
 ### Build in GZIPPER
 
