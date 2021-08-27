@@ -98,18 +98,18 @@ void genericWebserverServerNotFound(WebServer * webserver) {
   String contentTyp = StaticRequestHandler::getContentType(uri);
 
   // Are we allowd to send compressed data?
-  // (What is more expensive? Checking SPIFFS or header first?)
+  // (What is more expensive? Checking LittleFS or header first?)
   if (webserver->hasHeader("ACCEPT-ENCODING")) {
     if (webserver->header("ACCEPT-ENCODING").indexOf("gzip") != -1) {
       // gzip version exists?
-      if (SPIFFS.exists(uri + ".gz"))  {
+      if (LittleFS.exists(uri + ".gz"))  {
         uri += ".gz";
       }
     }
   }
 
-  if (SPIFFS.exists(uri)) {
-    File f = SPIFFS.open(uri, "r");
+  if (LittleFS.exists(uri)) {
+    File f = LittleFS.open(uri, "r");
     if (f) {
       if (webserver->streamFile(f, contentTyp) != f.size()) {
         Serial.println(F("Panic: Sent less data than expected!"));

@@ -1,6 +1,6 @@
 #include <WiFi.h>
 #include <FS.h>
-#include <SPIFFS.h>
+#include <LittleFS.h>
 #include <WebServer.h>
 // getting access to the nice mime-type-table and getContentType()
 #include <detail/RequestHandlersImpl.h>
@@ -22,8 +22,8 @@ void setup() {
   }
   Serial.println("\n\nESP32WebFlMgr Demo basicwsagzip"); // BASIC and WebServer And GZIPper
 
-  if (!SPIFFS.begin(true)) { // Format if failed.
-    Serial.println("SPIFFS Mount Failed");
+  if (!LittleFS.begin(true)) { // Format if failed.
+    Serial.println("LittleFS Mount Failed");
     return;
   }
 
