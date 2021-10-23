@@ -375,11 +375,11 @@ String ESPxWebFlMgr::escapeHTMLcontent(String html) {
 // in place editor
 //*****************************************************************************************************
 void ESPxWebFlMgr::fileManagerFileEditorInsert(void) {
-  // Serial.println("Edit");
+  //Serial.println("Edit");
 
   if ( (fileManager->args() == 1) && (fileManager->argName(0) == "edit") ) {
 
-    String fn = fileManager->arg(0);
+    String fn = "/"+fileManager->arg(0);
     if ( (! _ViewSysFiles) && (!allowAccessToThisFile(fn)) ) {
       fileManager->send(404, F("text/plain"), F("Illegal."));
       return;
