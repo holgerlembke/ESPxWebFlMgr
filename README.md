@@ -1,3 +1,9 @@
+# Coming soon
+
+https://github.com/holgerlembke/ESPFMfGK is the next thing! Support of unlimited file systems and devices, flat view or folder view, preview, utf-8-editor and much more.
+
+![NEW](https://raw.githubusercontent.com/holgerlembke/ESPxWebFlMgr/3e8d475f82d6fc8d77a2696e52ead87b789f1f93/img/newfeatures.jpg)
+
 # ESPxWebFlMgr
 
 * Manage your files with a simple web based interface.
